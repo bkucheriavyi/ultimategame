@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Folder Include="Model\" />
+    <Folder Include="Interfaces\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Class1.cs" />

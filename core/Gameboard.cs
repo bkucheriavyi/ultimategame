@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using core.Interfaces;
+using core.Model;
 
 namespace core
 {
-    public class Gameboard
+    public class Gameboard : IGameboard
     {
         public int Length { get; private set; }
         public int Width { get; private set; }
@@ -44,11 +46,16 @@ namespace core
             {
                 throw new InvalidOperationException("This place is already free. Try another one.");
             }
+
             _pieces.Remove(point);
         }
 
         public Piece MovePiece(Point from, Point vector)
         {
+            if(Math.Abs(vector.X) > 1){
+                throw new InvalidOperationException("Can move only one cell per time.");
+            }
+
             var current = this.Get(from);
 
             var newPiece = new Piece
@@ -72,9 +79,12 @@ namespace core
             return current;
         }
 
-        private bool IsPositionWithingGameBoard(Point position)
+        private bool IsPositionWithingGameBoard(Point target)
         {
-            return position.X <= this.Width - 1 && position.Y <= Length - 1;
+            return target.X < this.Width &&
+                   target.Y < Length &&
+                   target.X >= 0 &&
+                   target.Y >= 0;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using core.Model;
 
-namespace core
+namespace core.Interfaces
 {
     public interface ICommandToCoordinateMapper
     {

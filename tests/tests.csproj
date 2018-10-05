@@ -16,4 +16,8 @@
     <Compile Remove="performance\config.cs" />
     <Compile Remove="performance\performance.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="IntegrationTests\" />
+    <Folder Include="UnitTest\" />
+  </ItemGroup>
 </Project>

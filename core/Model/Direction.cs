@@ -1,4 +1,4 @@
-﻿namespace core
+﻿namespace core.Model
 {
     public enum Direction
     {

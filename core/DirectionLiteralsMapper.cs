@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using core.Interfaces;
+using core.Model;
 
 namespace core
 {
@@ -27,6 +30,13 @@ namespace core
             {new Point(-1,0), Direction.West},
         };
 
+        public static Dictionary<Direction, Point> _directionToMoveVectorMapping = new Dictionary<Direction, Point>() {
+            {Direction.North, new Point(0,1) },
+            {Direction.East, new Point(1,0) },
+            {Direction.South, new Point(0,-1) },
+            {Direction.West, new Point(-1,0)}
+        };
+
         public Direction MapFromChar(char direction)
         {
             return _charToDirectionMapping[direction];
@@ -36,9 +46,65 @@ namespace core
         {
             return _directionToCharMapping[direction];
         }
+
         public Direction MapFromMovingVector(Point vector)
         {
             return _moveVectorToDirectionMapping[vector];
+        }
+
+        public Point MapDirectionToMoveVector(Direction direction)
+        {
+            return _directionToMoveVectorMapping[direction];
+        }
+
+        public Direction RightOf(Direction current)
+        {
+            switch (current)
+            {
+                case Direction.North:
+                    {
+                        return Direction.East;
+                    }
+                case Direction.East:
+                    {
+                        return Direction.South;
+                    }
+                case Direction.South:
+                    {
+                        return Direction.West;
+                    }
+                case Direction.West:
+                    {
+                        return Direction.North;
+                    }
+                default:
+                    throw new InvalidOperationException($"{current}{nameof(current)} vale does not contains mapping");
+            }
+        }
+
+        public Direction LeftOf(Direction current)
+        {
+            switch (current)
+            {
+                case Direction.North:
+                    {
+                        return Direction.West;
+                    }
+                case Direction.East:
+                    {
+                        return Direction.North;
+                    }
+                case Direction.South:
+                    {
+                        return Direction.East;
+                    }
+                case Direction.West:
+                    {
+                        return Direction.South;
+                    }
+                default:
+                    throw new InvalidOperationException($"{current}{nameof(current)} vale does not contains mapping");
+            }
         }
     }
 }
