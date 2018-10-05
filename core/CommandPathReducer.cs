@@ -3,22 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Tests
+namespace core
 {
-    public class CommandPathReducer
+    public class CommandPathReducer : ICommandPathReducer
     {
         public const char LeftChar = 'L';
         public const char RightChar = 'R';
         public const char MoveChar = 'M';
+        private readonly IDirectionsMapper _directionsMapper;
 
-        public static Dictionary<Direction, char> _directionCharMapping = new Dictionary<Direction, char>
+        public CommandPathReducer(IDirectionsMapper directionsMapper)
         {
-            {Direction.East, 'E'},
-            {Direction.West, 'W'},
-            {Direction.South, 'S'},
-            {Direction.North, 'N'},
-        };
-
+            _directionsMapper = directionsMapper;
+        }
         public string Reduce(string input, Direction initialDirection)
         {
             var sb = new StringBuilder();
@@ -26,20 +23,23 @@ namespace Tests
 
             foreach (var c in input.ToUpperInvariant())
             {
-                if (c == LeftChar){
+                if (c == LeftChar)
+                {
                     currentDirection = LeftOf(currentDirection);
                 }
-                if( c == RightChar){
+                if (c == RightChar)
+                {
                     currentDirection = RightOf(currentDirection);
                 }
-                if (c == MoveChar) {
-                    sb.Append(_directionCharMapping[currentDirection]);
+                if (c == MoveChar)
+                {
+                    sb.Append(_directionsMapper.MapFromDirection(currentDirection));
                     sb.Append(MoveChar);
                 }
             }
             return sb.ToString();
         }
-        
+
         private Direction RightOf(Direction current)
         {
             switch (current)
@@ -91,13 +91,5 @@ namespace Tests
                                                         $"{current}{nameof(current)} vale does not contains mapping in runtime :(");
             }
         }
-    }
-
-    public enum Direction
-    {
-        North,
-        East,
-        South,
-        West
     }
 }

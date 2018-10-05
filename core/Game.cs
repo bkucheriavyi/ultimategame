@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using core;
 
 namespace core
 {
@@ -7,48 +7,32 @@ namespace core
     {
         private readonly Stack<Gameboard> _gameState = new Stack<Gameboard>();
         private readonly Gameboard _gameboard;
-        private readonly ICommandProcessor _commandProcessor;
+        private readonly CommandPathReducer _commandReducer;
+        private readonly ICommandToCoordinateMapper _commandToCoordinateMapper;
 
-        public Game(Gameboard gameboard, ICommandProcessor commandProcessor)
+        public Game(Gameboard gameboard,
+                    CommandPathReducer commandReducer,
+                    ICommandToCoordinateMapper commandToCoordinateMapper)
         {
             _gameboard = gameboard;
-            _commandProcessor = commandProcessor;
+            _commandReducer = commandReducer;
+            _commandToCoordinateMapper = commandToCoordinateMapper;
         }
 
-        public void Start(params Piece[] pieces)
+        public GameResult Play(Piece piece, string moveCommands, Direction startingDirection)
         {
-            foreach(var piece in pieces){
-                _gameboard.Add(piece);
+            _gameboard.Add(piece);
+
+            var reducedCommands = _commandReducer.Reduce(moveCommands, startingDirection);
+            IEnumerable<Point> moveSequence = _commandToCoordinateMapper.Map(reducedCommands);
+
+            Piece target = _gameboard.Get(piece.Position);
+            foreach(var movingVector in moveSequence)
+            {
+                target = _gameboard.MovePiece(target.Position, movingVector);
             }
-         //   _gameState.Push(_gameboard.GetState());
-        }
 
-        public void Move(string command, params Piece[] pieces)
-        {
-            IEnumerable<object> moves = _commandProcessor.Process(command);
-
-            foreach(var piece in pieces){
-                foreach (var move in moves)
-                {
-                    Gameboard newState = (Gameboard)_gameboard.Move(piece, move);
-                    _gameState.Push(newState);
-                }
-            }
-        }
-    }
-
-    public class Gameboard
-    {
-        IEnumerable<Piece> Pieces { get; set; }
-
-        internal void Add(Piece piece)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal Gameboard Move(Piece piece, object move)
-        {
-            throw new NotImplementedException();
+            return new GameResult { Piece = target };
         }
     }
 }
