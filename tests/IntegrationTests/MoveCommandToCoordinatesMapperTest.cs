@@ -27,7 +27,6 @@ namespace tests.UnitTest
         }
 
         [Test]
-        [Ignore("Failing for some reason")]
         [TestCase("RRRRRRRR")]
         [TestCase("RLRLRLR")]
         [TestCase("LLLLLLLL")]
@@ -38,10 +37,8 @@ namespace tests.UnitTest
             var mapper = new MoveCommandToCoordinatesMapper(directionMapper);
 
             //when
-            var resut = mapper.Map(input);
-
             //then
-            var ex = Assert.Throws<Exception>(() => mapper.Map(input));
+            var ex = Assert.Throws<FormatException>(() => mapper.Map(input));
             Assert.That(ex.Message, Is.EqualTo("Missing move command"));
         }
     }
